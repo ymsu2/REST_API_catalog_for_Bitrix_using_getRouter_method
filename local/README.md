@@ -466,7 +466,7 @@ post_max_size = 50M
 
 ## Автор
 
-Юрий Сергеев [Email](mailto:ysergeev@yandex.ru) для демонстрации возможностей REST API в Битрикс.
+Юрий Сергеев [Email](mailto:ysergeev@yandex.ru) Telegramm <https://t.me/yms_sevastopol>.
 
 ---
 *Последнее обновление: январь 2026*

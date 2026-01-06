@@ -209,7 +209,7 @@ return static function (RoutingConfigurator $routes) {
 
 **Apache (.htaccess):**
 ```apache
-<IfModule mod_rewrite.c>
+
     Options +FollowSymLinks
     RewriteEngine On
 
@@ -221,7 +221,7 @@ return static function (RoutingConfigurator $routes) {
     # Новые правила для роутинга (с версии 23.500.0 и выше) - задействован метод \Bitrix\Main\Application::getRouter()
     RewriteCond %{REQUEST_FILENAME} !/bitrix/routing_index.php$
     RewriteRule ^(.*)$ /bitrix/routing_index.php [L]
-</IfModule>
+
 ```
 
 **Nginx:**

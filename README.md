@@ -209,19 +209,30 @@ return static function (RoutingConfigurator $routes) {
 
 **Apache (.htaccess):**
 ```apache
-
+<IfModule mod_rewrite.c>
     Options +FollowSymLinks
     RewriteEngine On
-
+    
+    # Обработка авторизации
+    RewriteRule .* - [E=REMOTE_USER:%{HTTP:Authorization}]
+    
+    # Старый API (для обратной совместимости)
+    # RewriteCond %{REQUEST_URI} ^/api/catalog/
+    # RewriteRule ^api/catalog/(.*)$ /local/modules/rest_catalog/api_handler.php [L,QSA]
+    
     # Стандартный битрикс-роутинг
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-l
     RewriteCond %{REQUEST_FILENAME} !-d
 
-    # Новые правила для роутинга (с версии 23.500.0 и выше) - задействован метод \Bitrix\Main\Application::getRouter()
+    # НОВЫЕ ПРАВИЛА ДЛЯ РОУТИНГА (С версии 23.500.0 и выше)
     RewriteCond %{REQUEST_FILENAME} !/bitrix/routing_index.php$
     RewriteRule ^(.*)$ /bitrix/routing_index.php [L]
 
+    # ЗАКОММЕНТИРОВАТЬ старую конфигурацию через urlrewrite.php
+    # RewriteCond %{REQUEST_FILENAME} !/bitrix/urlrewrite.php$
+    # RewriteRule ^(.*)$ /bitrix/urlrewrite.php [L]
+</IfModule>
 ```
 
 **Nginx:**

@@ -466,7 +466,8 @@ post_max_size = 50M
 
 ## Автор
 
-Юрий Сергеев [Email](mailto:ysergeev@yandex.ru) Telegramm <https://t.me/yms_sevastopol>.
+Юрий Сергеев [Email](mailto:ysergeev@yandex.ru) 
+Telegramm <https://t.me/yms_sevastopol>.
 
 ---
 *Последнее обновление: январь 2026*

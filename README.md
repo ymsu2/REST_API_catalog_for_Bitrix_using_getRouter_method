@@ -216,10 +216,6 @@ return static function (RoutingConfigurator $routes) {
     # Обработка авторизации
     RewriteRule .* - [E=REMOTE_USER:%{HTTP:Authorization}]
     
-    # Старый API (для обратной совместимости)
-    # RewriteCond %{REQUEST_URI} ^/api/catalog/
-    # RewriteRule ^api/catalog/(.*)$ /local/modules/rest_catalog/api_handler.php [L,QSA]
-    
     # Стандартный битрикс-роутинг
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-l

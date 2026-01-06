@@ -1,0 +1,340 @@
+openapi: 3.0.0
+info:
+  title: REST API Каталога товаров
+  description: |
+    REST API для работы с каталогом товаров интернет-магазина.
+    
+    Обеспечивает доступ к категориям, товарам и их детальной информации.
+    
+    Для доступа к API используется ключ авторизации: `12345`
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+
+servers:
+  - url: https://business-01.local/rest
+    description: Основной сервер
+
+paths:
+  /{api_key}/rest_catalog.categories.get:
+    get:
+      summary: Получение списка категорий
+      description: |
+        Возвращает дерево активных категорий каталога "Одежда".
+        Сортировка выполняется по индексу категории по возрастанию.
+      parameters:
+        - name: api_key
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "12345"
+          description: Ключ авторизации API
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoriesResponse'
+              example:
+                result:
+                  - ID: 10
+                    NAME: "Платья"
+                    DETAIL_PAGE_URL: "/catalog/clothes/dresses/"
+                    PICTURE: "/upload/iblock/abc/dress.jpg"
+                    CHILDREN:
+                      - ID: 11
+                        NAME: "Вечерние"
+                        DETAIL_PAGE_URL: "/catalog/clothes/dresses/evening/"
+                        PICTURE: "/upload/iblock/def/evening_dress.jpg"
+                        CHILDREN: []
+        '403':
+          description: Неверный API ключ
+        '500':
+          description: Внутренняя ошибка сервера
+
+  /{api_key}/rest_catalog.category.products.get:
+    get:
+      summary: Получение товаров в категории
+      description: |
+        Возвращает список активных товаров в указанной категории.
+        Сортировка выполняется по индексу товара по возрастанию.
+      parameters:
+        - name: api_key
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "12345"
+          description: Ключ авторизации API
+        - name: categoryId
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: ID категории
+          example: 10
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductsResponse'
+              example:
+                result:
+                  - ID: 100
+                    NAME: "Платье кружевное"
+                    DETAIL_PAGE_URL: "/catalog/clothes/dresses/100/"
+                    PICTURE: "/upload/iblock/def/dress100.jpg"
+                    MIN_PRICE: 3500
+        '400':
+          description: Не указан categoryId
+        '403':
+          description: Неверный API ключ
+        '404':
+          description: Категория не найдена
+        '500':
+          description: Внутренняя ошибка сервера
+
+  /{api_key}/rest_catalog.product.get:
+    get:
+      summary: Получение детальной информации о товаре
+      description: Возвращает детальную информацию о товаре, включая характеристики и торговые предложения.
+      parameters:
+        - name: api_key
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "12345"
+          description: Ключ авторизации API
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: ID товара
+          example: 100
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDetailResponse'
+              example:
+                result:
+                  ID: 100
+                  NAME: "Платье кружевное"
+                  DETAIL_PAGE_URL: "/catalog/clothes/dresses/100/"
+                  GALLERY:
+                    - "/upload/iblock/img1.jpg"
+                    - "/upload/iblock/img2.jpg"
+                  PROPERTIES:
+                    - code: "BRAND_REF"
+                      name: "Бренд"
+                      value: "Chanel"
+                    - code: "MANUFACTURER"
+                      name: "Производитель"
+                      value: "Chanel Fashion House"
+                    - code: "MATERIAL"
+                      name: "Материал"
+                      value: "Кружево, шелк"
+                  OFFERS:
+                    - id: 101
+                      name: "Платье кружевное (красное, S)"
+                      article: "PL-100-RED-S"
+                      color: "Красный"
+                      size: "S"
+                      price: 3500
+                    - id: 102
+                      name: "Платье кружевное (красное, M)"
+                      article: "PL-100-RED-M"
+                      color: "Красный"
+                      size: "M"
+                      price: 3500
+        '400':
+          description: Не указан id товара
+        '403':
+          description: Неверный API ключ
+        '404':
+          description: Товар не найден
+        '500':
+          description: Внутренняя ошибка сервера
+
+components:
+  schemas:
+    Category:
+      type: object
+      properties:
+        ID:
+          type: integer
+          description: ID категории
+          example: 10
+        NAME:
+          type: string
+          description: Название категории
+          example: "Платья"
+        DETAIL_PAGE_URL:
+          type: string
+          description: URL детальной страницы категории
+          example: "/catalog/clothes/dresses/"
+        PICTURE:
+          type: string
+          description: URL картинки категории
+          example: "/upload/iblock/abc/dress.jpg"
+        CHILDREN:
+          type: array
+          description: Список дочерних категорий
+          items:
+            $ref: '#/components/schemas/Category'
+          example: []
+    
+    CategoriesResponse:
+      type: object
+      properties:
+        result:
+          type: array
+          description: Список корневых категорий
+          items:
+            $ref: '#/components/schemas/Category'
+    
+    Product:
+      type: object
+      properties:
+        ID:
+          type: integer
+          description: ID товара
+          example: 100
+        NAME:
+          type: string
+          description: Название товара
+          example: "Платье кружевное"
+        DETAIL_PAGE_URL:
+          type: string
+          description: URL детальной страницы товара
+          example: "/catalog/clothes/dresses/100/"
+        PICTURE:
+          type: string
+          description: URL картинки товара
+          example: "/upload/iblock/def/dress100.jpg"
+        MIN_PRICE:
+          type: number
+          format: float
+          description: Минимальная цена товара (цена "от")
+          example: 3500
+    
+    ProductsResponse:
+      type: object
+      properties:
+        result:
+          type: array
+          description: Список товаров в категории
+          items:
+            $ref: '#/components/schemas/Product'
+    
+    Property:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Символьный код свойства
+          example: "BRAND_REF"
+        name:
+          type: string
+          description: Название свойства
+          example: "Бренд"
+        value:
+          type: string
+          description: Значение свойства
+          example: "Chanel"
+    
+    Offer:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID торгового предложения
+          example: 101
+        name:
+          type: string
+          description: Название торгового предложения
+          example: "Платье кружевное (красное, S)"
+        article:
+          type: string
+          description: Артикул
+          example: "PL-100-RED-S"
+        color:
+          type: string
+          description: Цвет
+          example: "Красный"
+        size:
+          type: string
+          description: Размер
+          example: "S"
+        price:
+          type: number
+          format: float
+          description: Цена
+          example: 3500
+    
+    ProductDetail:
+      type: object
+      properties:
+        ID:
+          type: integer
+          description: ID товара
+          example: 100
+        NAME:
+          type: string
+          description: Название товара
+          example: "Платье кружевное"
+        DETAIL_PAGE_URL:
+          type: string
+          description: URL детальной страницы товара
+          example: "/catalog/clothes/dresses/100/"
+        GALLERY:
+          type: array
+          description: Галерея картинок товара
+          items:
+            type: string
+          example:
+            - "/upload/iblock/img1.jpg"
+            - "/upload/iblock/img2.jpg"
+        PROPERTIES:
+          type: array
+          description: Характеристики товара
+          items:
+            $ref: '#/components/schemas/Property'
+        OFFERS:
+          type: array
+          description: Список торговых предложений
+          items:
+            $ref: '#/components/schemas/Offer'
+        PREVIEW_TEXT:
+          type: string
+          description: Краткое описание товара
+          example: "Элегантное кружевное платье для особых случаев"
+        DETAIL_TEXT:
+          type: string
+          description: Подробное описание товара
+          example: "<p>Элегантное кружевное платье ручной работы...</p>"
+    
+    ProductDetailResponse:
+      type: object
+      properties:
+        result:
+          $ref: '#/components/schemas/ProductDetail'
+
+securitySchemes:
+  ApiKeyAuth:
+    type: apiKey
+    in: path
+    name: api_key
+    description: Ключ доступа к API
+
+security:
+  - ApiKeyAuth: []

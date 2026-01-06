@@ -1,0 +1,22 @@
+# ... другие директивы
+<IfModule mod_rewrite.c>
+    Options +FollowSymLinks
+    RewriteEngine On
+    
+    # Обработка авторизации
+    RewriteRule .* - [E=REMOTE_USER:%{HTTP:Authorization}]
+    
+    # Стандартный битрикс-роутинг
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-l
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # НОВЫЕ ПРАВИЛА ДЛЯ РОУТИНГА (С версии 23.500.0 и выше) - задействован метод \Bitrix\Main\Application::getRouter()
+    RewriteCond %{REQUEST_FILENAME} !/bitrix/routing_index.php$
+    RewriteRule ^(.*)$ /bitrix/routing_index.php [L]
+
+    # ЗАКОММЕНТИРОВАТЬ старую конфигурацию через urlrewrite.php
+    # RewriteCond %{REQUEST_FILENAME} !/bitrix/urlrewrite.php$
+    # RewriteRule ^(.*)$ /bitrix/urlrewrite.php [L]
+</IfModule>
+# ... другие директивы

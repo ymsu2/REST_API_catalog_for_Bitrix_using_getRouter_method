@@ -310,39 +310,6 @@ return static function (RoutingConfigurator $routes) {
 - SIZES_CLOTHES (Список) - Размеры одежды
 - MORE_PHOTO (Файл) - Картинки
 
-### 3. Настройка сервера
-
-#### Для Apache:
-Добавьте в `.htaccess`:
-```apache
-# Обработка авторизации
-RewriteRule .* - [E=REMOTE_USER:%{HTTP:Authorization}]
-
-# Роутинг через новый метод (с версии 23.500.0)
-RewriteCond %{REQUEST_FILENAME} !/bitrix/routing_index.php$
-RewriteRule ^(.*)$ /bitrix/routing_index.php [L]
-```
-
-#### Для Nginx:
-Добавьте в конфигурацию:
-```nginx
-# Обработка авторизации
-location ~* ^.+\.(php|html?|phtml)$ {
-    fastcgi_param REMOTE_USER $http_authorization;
-}
-
-# Роутинг через новый метод
-if (!-f $request_filename) {
-    set $bitrix_rewrite 1;
-}
-if (!-d $request_filename) {
-    set $bitrix_rewrite 1;
-}
-if ($bitrix_rewrite = 1) {
-    rewrite ^/(.*)$ /bitrix/routing_index.php last;
-}
-```
-
 ## Консольные скрипты
 
 ### 📤 1. Экспорт в Excel

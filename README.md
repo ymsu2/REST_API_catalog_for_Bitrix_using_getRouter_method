@@ -44,12 +44,12 @@
 
 /export_page.php    # Экспорт всех активных товаров из инфоблока "Одежда" в форматированный Excel
 (через CAdminExcelExport). Ппример вызова:
-> http://Ваш_Сайт/export_page.php
+* http://Ваш_Сайт/export_page.php
 
 /export_public.php  # Экспорт всех активных товаров из инфоблока "Одежда" в форматированный Excel
-(публичный доступ). примеры вызова:
-> http://Ваш_Сайт/export_public.php?api_key=12345&action=export&type=csv
-> http://Ваш_Сайт/export_public.php?api_key=12345&action=export&type=excel_xml
+(публичный доступ). Ппример вызова:
+* http://Ваш_Сайт/export_public.php?api_key=12345&action=export&type=csv
+* http://Ваш_Сайт/export_public.php?api_key=12345&action=export&type=excel_xml
 
 /openapi.yaml                             # файл спецификации OpenAPI
 

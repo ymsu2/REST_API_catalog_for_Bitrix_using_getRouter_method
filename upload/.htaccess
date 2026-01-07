@@ -1,0 +1,53 @@
+# /upload/.htaccess
+Options +Indexes
+IndexOptions FancyIndexing NameWidth=* DescriptionWidth=* HTMLTable
+
+<IfModule mod_autoindex.c>
+    # Включаем отображение списка файлов
+    Options +Indexes
+    
+    # Настройка внешнего вида
+    IndexOptions +SuppressDescription +SuppressHTMLPreamble +SuppressLastModified +SuppressSize
+    IndexOrderDefault Ascending Name
+    
+    # Заголовок
+    HeaderName HEADER.html
+    ReadmeName FOOTER.html
+    
+    # Иконки для разных типов файлов
+    AddIconByEncoding (CMP,/icons/compressed.gif) x-compress x-gzip x-bzip2
+    AddIconByType (TXT,/icons/text.gif) text/*
+    AddIconByType (IMG,/icons/image2.gif) image/*
+    AddIconByType (SND,/icons/sound2.gif) audio/*
+    AddIconByType (VID,/icons/movie.gif) video/*
+    
+    AddIcon /icons/binary.gif .bin .exe
+    AddIcon /icons/back.gif ..
+    AddIcon /icons/folder.gif ^^DIRECTORY^^
+    AddIcon /icons/blank.gif ^^BLANKICON^^
+    
+    DefaultIcon /icons/unknown.gif
+    
+    # Описание для типов файлов
+    AddDescription "Microsoft Excel File" .xls .xlsx
+    AddDescription "CSV File" .csv
+    AddDescription "GZIP compressed file" .gz
+    AddDescription "ZIP compressed file" .zip
+</IfModule>
+
+<IfModule mod_headers.c>
+    # Разрешаем кэширование статических файлов
+    <FilesMatch "\.(xls|csv|txt)$">
+        Header set Cache-Control "public, max-age=86400"
+    </FilesMatch>
+</IfModule>
+
+# Разрешаем доступ ко всем файлам
+<Files "*">
+    Require all granted
+</Files>
+
+# Запрещаем доступ к системным файлам
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
